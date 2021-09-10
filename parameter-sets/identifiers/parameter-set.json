@@ -1,0 +1,33 @@
+/* This file is the descriptor for the parameter set identifiers */
+
+{
+    "meta" : {
+        "label": "Kayrros login with Username-Password",
+        "description": "Define a Kayrros account.",
+        "icon": "icon-keyboard"
+    },
+    "defaultDefinableInline": true,
+    "defaultDefinableAtProjectLevel": true,
+    "pluginParams": [
+    ],
+
+    "params": [
+        {
+            "name": "username",
+            "label": "Email",
+            "type": "STRING",
+            "description": "The email you use to connect to the Kayrros instance",
+            "mandatory": true
+        },
+        {
+            "name": "password",
+            "label": "Password",
+            "type": "PASSWORD",
+            "description": "The password you use to connect to the Kayrros instance",
+            "mandatory": true
+        }
+    ]
+}
+
+
+
