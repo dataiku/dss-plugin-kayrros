@@ -29,25 +29,16 @@
     "paramsPythonSetup": "choices.py",
     "params": [
         {
-            "name": "id_dataset",
-            "label": "ID of the dataset",
-            "type": "STRING",
-            "description": "ID of the dataset",
-            "mandatory": true
-        },
-        {
             "name": "preset",
             "label": "Preset you want to choose",
             "type": "PRESET",
-            "description": "Preset you want to choose",
             "parameterSetId": "identifiers",
             "mandatory": true
         },
         {
-            "name": "egg_type",
-            "label": "Choose your eggs",
+            "name": "id_dataset",
+            "label": "Choose your dataset",
             "type": "SELECT",
-            "description": "Choose your eggs",
             "getChoicesFromPython": true
         }
     ]

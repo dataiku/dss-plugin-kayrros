@@ -1,25 +1,16 @@
 # This file is the actual code for the custom Python dataset kayrros_retrieve-dataset
 
-# import the base class for the custom dataset
-
-"""
-A custom Python dataset is a subclass of Connector.
-
-The parameters it expects and some flags to control its handling by DSS are
-specified in the connector.json file.
-
-Note: the name of the class itself is not relevant.
-"""
-
 from dataiku.connector import Connector
 from utils.authentification import get_headers
 import requests
 import dataiku
-import pandas as pd
 
 class MyConnector(Connector):
+    
+    # A custom Python dataset is a subclass of connector.
 
     def __init__(self, config, plugin_config):
+        
         """
         The configuration parameters set up by the user in the settings tab of the
         dataset are passed as a json object 'config' to the constructor.
@@ -27,37 +18,18 @@ class MyConnector(Connector):
         file settings.json at the root of the plugin directory are passed as a json
         object 'plugin_config' to the constructor
         """
-        Connector.__init__(self, config, plugin_config)  # pass the parameters to the base class
+        
+        Connector.__init__(self, config, plugin_config) 
 
-        # perform some more initialization
+        # Perform some more initialization
         self.id = self.config["id_dataset"]
         self.preset = self.config["preset"]
         self.username = self.preset["username"]
         self.password = self.preset["password"]        
         
+        
     def get_read_schema(self):
-        """
-        Returns the schema that this connector generates when returning rows.
 
-        The returned schema may be None if the schema is not known in advance.
-        In that case, the dataset schema will be infered from the first rows.
-
-        If you do provide a schema here, all columns defined in the schema
-        will always be present in the output (with None value),
-        even if you don't provide a value in generate_rows
-
-        The schema must be a dict, with a single key: "columns", containing an array of
-        {'name':name, 'type' : type}.
-
-        Example:
-            return {"columns" : [ {"name": "col1", "type" : "string"}, {"name" :"col2", "type" : "float"}]}
-
-
-        Supported types are: string, int, bigint, float, double, date, boolean
-        """
-
-        # In this example, we don't specify a schema here, so DSS will infer the schema
-        # from the columns actually returned by the generate_rows method
         return {"columns" : [ {"name": "value_date", "type" : "string"}, 
                               {"name" :"metrics", "type" : "array"},
                               {"name" :"extra_props", "type" : "array"},
@@ -66,6 +38,7 @@ class MyConnector(Connector):
 
     def generate_rows(self, dataset_schema=None, dataset_partitioning=None,
                             partition_id=None, records_limit = -1):
+        
         """
         The main reading method.
 
@@ -75,21 +48,35 @@ class MyConnector(Connector):
         The dataset schema and partitioning are given for information purpose.
         """
         
-        #Retrieve token associated with email and password
-        url = "https://auth.kayrros.com/v2/login"
+        # I. Get the id of the dataset from the id of the collection
         
-        req = requests.post(url, json={"email": self.preset["username"], "password": self.preset["password"]})
+        GET_DATASETS = "https://platform.api.kayrros.com/v1/processing/collection/datasets"
+        PARAMS = {"collection_id": self.id}
+
+        req = requests.post(GET_DATASETS, data=PARAMS, headers=get_headers(self.config, self.plugin_config))
+
         if req.status_code == 200:
-            token = req.json()['token']
+            ds = req.json()
+            # We choose the dataset with the LOWEST GRANULARITY. 
+            # We could offer a choice, but that's how we did it for v1.
+            self.code = ds[0]["id"]
 
-        #Generate header to make further requests
-        headers = {"Authorization": "Bearer " + token}
-        url_asset = "https://platform.api.kayrros.com/v1/processingresult/dataset/" + self.id
+        else:
+            raise Exception("Error retrieving dataset id")
+            
+        # II. Get the dataset from its id
+        
+        url_asset = "https://platform.api.kayrros.com/v1/processingresult/dataset/" + self.code
 
-        req = requests.post(url_asset, headers = headers)
+        req = requests.post(url_asset, headers = get_headers(self.config, self.plugin_config))
 
         if req.status_code == 200:
             content = req.json()
+        
+        else:
+            raise Exception("Error retrieving dataset content")
+        
+        # III. Shape it and return its rows
 
         list_aggreg = []
 
@@ -99,13 +86,14 @@ class MyConnector(Connector):
             for item in list_i:
                 item["name"] = content["assets"][i]["asset_name"]
             list_aggreg += list_i
-
+        
         for record in list_aggreg:
             yield {"value_date" : str(record["value_date"]), 
                    "metrics" : str(record["metrics"]), 
                    "extra_props" : str(record["extra_props"]), 
                    "name" : str(record["name"])}
 
+            
     def get_writer(self, dataset_schema=None, dataset_partitioning=None,
                          partition_id=None):
         """
