@@ -48,25 +48,9 @@ class MyConnector(Connector):
         The dataset schema and partitioning are given for information purpose.
         """
         
-        # I. Get the id of the dataset from the id of the collection
+        # I. Get the dataset from the id
         
-        GET_DATASETS = "https://platform.api.kayrros.com/v1/processing/collection/datasets"
-        PARAMS = {"collection_id": self.id}
-
-        req = requests.post(GET_DATASETS, data=PARAMS, headers=get_headers(self.config, self.plugin_config))
-
-        if req.status_code == 200:
-            ds = req.json()
-            # We choose the dataset with the LOWEST GRANULARITY. 
-            # We could offer a choice, but that's how we did it for v1.
-            self.code = ds[0]["id"]
-
-        else:
-            raise Exception("Error retrieving dataset id")
-            
-        # II. Get the dataset from its id
-        
-        url_asset = "https://platform.api.kayrros.com/v1/processingresult/dataset/" + self.code
+        url_asset = "https://platform.api.kayrros.com/v1/processingresult/dataset/" + self.id
 
         req = requests.post(url_asset, headers = get_headers(self.config, self.plugin_config))
 
@@ -76,7 +60,7 @@ class MyConnector(Connector):
         else:
             raise Exception("Error retrieving dataset content")
         
-        # III. Shape it and return its rows
+        # II. Shape it and return its rows
 
         list_aggreg = []
 
