@@ -25,7 +25,12 @@ class MyConnector(Connector):
 
         # Perform some more initialization
         self.id = self.config["id_dataset"]
+        if self.id == "":
+            raise ValueError("A Kayross dataset ID is necessary to fetch the data. Please provide one in the plugin settings.")
+       
         self.preset = self.config["preset"]
+        if not self.preset:
+            raise ValueError("A Kayrros account is necessary to fetch the data. Please provide one in the preset field.")
         self.username = self.preset["username"]
         self.password = self.preset["password"]        
         
