@@ -4,7 +4,9 @@ from dataiku.connector import Connector
 from utils.authentification import get_headers
 import requests
 import dataiku
+import logging
 
+logger = logging.getLogger(__name__) 
 class MyConnector(Connector):
     
     # A custom Python dataset is a subclass of connector.
