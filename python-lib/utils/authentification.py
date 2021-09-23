@@ -1,5 +1,7 @@
 import requests
+import logging
 
+logger = logging.getLogger(__name__)  
 
 def get_headers(config, plugin_config):
     
