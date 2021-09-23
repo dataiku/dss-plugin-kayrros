@@ -11,7 +11,7 @@
         "label": "Kayrros",
 
         // description: longer string to help end users understand what this plugin does
-        "description": "",
+        "description": "Read data from your Kayrros account",
 
         "author": "admin",
 
