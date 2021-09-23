@@ -19,7 +19,7 @@
         "icon": "icon-puzzle-piece",
 
         // List of tags for filtering the list of plugins
-        "tags": [], //for example: ["Machine Learning", "NLP"]
+       "tags": ["Connector", "Kayrros"],
 
         // URL where the user can learn more about the plugin
         "url": "",
