@@ -54,13 +54,14 @@ class MyConnector(Connector):
         
         url_asset = "https://platform.api.kayrros.com/v1/processingresult/dataset/" + self.id
 
-        req = requests.post(url_asset, headers = get_headers(self.config, self.plugin_config))
-
-        if req.status_code == 200:
-            content = req.json()
-        
-        else:
-            raise Exception("Error retrieving dataset content")
+        try:        
+            response = requests.post(url_asset, headers = get_headers(self.config, self.plugin_config))
+            response.raise_for_status()
+        except requests.exceptions.RequestException as error:
+            logger.exception("Dataset could not be retrieved because of the following error:\n {}".format(error))
+            raise(error)
+        content = response.json()
+        logger.info("Received {} records".format(len(content["assets"])))
         
         # II. Shape it and return its rows
 
