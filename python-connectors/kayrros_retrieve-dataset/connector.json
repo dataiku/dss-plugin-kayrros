@@ -8,7 +8,7 @@
         "description": "",
 
         // icon: must be one of the FontAwesome 3.2.1 icons, complete list here at https://fontawesome.com/v3.2.1/icons/
-        "icon": "icon-table"
+        "icon": "icon-rss"
     },
 
     /* Can this connector read data ? */
@@ -31,8 +31,7 @@
         {
             "name": "id_dataset",
             "label": "Identifier of your dataset (can be found on Kayrros' website)",
-            "type": "STRING",
-            "getChoicesFromPython": true
+            "type": "STRING"
         },
         {
             "name": "preset",
