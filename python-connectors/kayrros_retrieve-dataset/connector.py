@@ -7,6 +7,7 @@ import dataiku
 import logging
 
 logger = logging.getLogger(__name__) 
+
 class MyConnector(Connector):
     
     # A custom Python dataset is a subclass of connector.

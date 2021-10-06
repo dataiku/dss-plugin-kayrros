@@ -24,7 +24,7 @@
         // URL where the user can learn more about the plugin
         "url": "",
 
-        "licenseInfo": "Apache Software License"
-    "supportLevel": "NOT_SUPPORTED" 
+        "licenseInfo": "Apache Software License",
+        "supportLevel": "NOT_SUPPORTED" 
     }
 }
