@@ -3,13 +3,10 @@ import logging
 
 logger = logging.getLogger(__name__)  
 
-def get_headers(config, plugin_config):
+def get_headers(username, password):
     
     #Retrieve token associated with email and password
     url = "https://auth.kayrros.com/v2/login"
-
-    username = config["preset"]["username"]
-    password = config["preset"]["password"]
     
     try:        
         response = requests.post(url, json={"email": username, "password": password})

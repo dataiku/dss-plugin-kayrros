@@ -29,16 +29,16 @@
     "paramsPythonSetup": "choices.py",
     "params": [
         {
-            "name": "id_dataset",
-            "label": "Identifier of your dataset (can be found on Kayrros' website)",
-            "type": "STRING"
-        },
-        {
             "name": "preset",
             "label": "Preset you want to choose",
             "type": "PRESET",
             "parameterSetId": "identifiers",
             "mandatory": true
+        },
+        {
+            "name": "id_dataset",
+            "label": "Identifier of your dataset (can be found on Kayrros' website)",
+            "type": "STRING"
         }
     ]
 }

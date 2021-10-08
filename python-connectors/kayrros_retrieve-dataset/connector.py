@@ -3,7 +3,6 @@
 from dataiku.connector import Connector
 from utils.authentification import get_headers
 import requests
-import dataiku
 import logging
 
 logger = logging.getLogger(__name__) 
@@ -25,15 +24,18 @@ class MyConnector(Connector):
         Connector.__init__(self, config, plugin_config) 
 
         # Perform some more initialization
-        self.id = self.config["id_dataset"]
+        
+        self.id = self.config["id_dataset"] #change that as suggested: self.id = config.get("id_dataset", "")
         if self.id == "":
-            raise ValueError("A Kayross dataset ID is necessary to fetch the data. Please provide one in the plugin settings.")
+            raise ValueError("A Kayrros dataset ID is necessary to fetch the data. Please provide one in the plugin settings.")
        
-        self.preset = self.config["preset"]
+        self.preset = self.config["preset"] # replace by self.id = config.get("id_dataset", "")
         if not self.preset:
             raise ValueError("A Kayrros account is necessary to fetch the data. Please provide one in the preset field.")
-        self.username = self.preset["username"]
-        self.password = self.preset["password"]        
+        username = self.preset["username"] # replace by self.id = config.get("id_dataset", "")
+        password = self.preset["password"] # replace by self.id = config.get("id_dataset", "")
+
+        self.headers = get_headers(username, password)
         
         
     def get_read_schema(self):
@@ -42,6 +44,22 @@ class MyConnector(Connector):
                               {"name" :"metrics", "type" : "array"},
                               {"name" :"extra_props", "type" : "array"},
                               {"name" :"name", "type" : "string"}]}
+
+
+    def get_dataset(self):
+        
+        url_asset = "https://platform.api.kayrros.com/v1/processingresult/dataset/" + self.id
+
+        try:        
+            response = requests.post(url_asset, headers = self.headers)
+            response.raise_for_status()
+        except requests.exceptions.RequestException as error:
+            logger.exception("Dataset could not be retrieved because of the following error:\n {}".format(error))
+            raise(error)
+        content = response.json()
+        logger.info("Received {} records".format(len(content["assets"])))
+
+        return content
 
 
     def generate_rows(self, dataset_schema=None, dataset_partitioning=None,
@@ -56,35 +74,19 @@ class MyConnector(Connector):
         The dataset schema and partitioning are given for information purpose.
         """
         
-        # I. Get the dataset from the id
+        content = get_dataset(self)
         
-        url_asset = "https://platform.api.kayrros.com/v1/processingresult/dataset/" + self.id
-
-        try:        
-            response = requests.post(url_asset, headers = get_headers(self.config, self.plugin_config))
-            response.raise_for_status()
-        except requests.exceptions.RequestException as error:
-            logger.exception("Dataset could not be retrieved because of the following error:\n {}".format(error))
-            raise(error)
-        content = response.json()
-        logger.info("Received {} records".format(len(content["assets"])))
-        
-        # II. Shape it and return its rows
-
         list_aggreg = []
 
         # Shape the data
-        for i in range(len(content["assets"])):
-            list_i = content["assets"][i]["results"]
-            for item in list_i:
-                item["name"] = content["assets"][i]["asset_name"]
-            list_aggreg += list_i
-        
-        for record in list_aggreg:
-            yield {"value_date" : str(record["value_date"]), 
-                   "metrics" : str(record["metrics"]), 
-                   "extra_props" : str(record["extra_props"]), 
-                   "name" : str(record["name"])}
+        for asset in content.get("assets",[]):
+            records = content["assets"][asset]["results"]
+            for record in records:
+                yield {"value_date" : str(record["value_date"]),
+                       "metrics" : str(record["metrics"]),
+                       "extra_props" : str(record["extra_props"]),
+                       "name" : str(content["assets"][asset]["asset_name"])}
+
 
             
     def get_writer(self, dataset_schema=None, dataset_partitioning=None,
