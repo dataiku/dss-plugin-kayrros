@@ -33,6 +33,6 @@ def do(config, plugin_config):
     # Build choices
     
     for item in coll:
-        choices += [{"id":item["id"], "label":item["name"]}]
+        choices += [{"value":item["id"], "label":item["name"]}]
         
     return {"choices": choices}

@@ -24,34 +24,31 @@ class MyConnector(Connector):
                
         Connector.__init__(self, config, plugin_config) 
 
-        # Perform some more initialization
+        # Retrieve token
         
         self.preset = self.config["preset"] # replace by self.id = config.get("id_dataset", "")
         if not self.preset:
             raise ValueError("A Kayrros account is necessary to fetch the data. Please provide one in the preset field.")
-            
-        print("000000000000000000000000000000000000000000000000000000000000")
-        print(config)
-        print(self.config["id_dataset"])
-        print("000000000000000000000000000000000000000000000000000000000000")
-
-
-        self.id = self.config["id_dataset"] #change that as suggested: self.id = config.get("id_dataset", "")
-        if self.id == "":
-            raise ValueError("A Kayrros dataset ID is necessary to fetch the data. Please provide one in the plugin settings.")
-       
+        
         username = self.preset["username"] # replace by self.id = config.get("id_dataset", "")
         password = self.preset["password"] # replace by self.id = config.get("id_dataset", "")
 
         self.headers = get_headers(username, password)
+
         
+        # Retrieve dataset
+
+        self.id_dataset = config.get("id_dataset","")
+        if not self.id_dataset:
+            raise ValueError("Choosing a collection is necessary to fetch the data. Please provide one in the dataset field.")
+
         
     def get_read_schema(self):
 
-        return {"columns" : [ {"name": "value_date", "type" : "string"}, 
-                              {"name" :"metrics", "type" : "array"},
-                              {"name" :"extra_props", "type" : "array"},
-                              {"name" :"name", "type" : "string"}]}
+         return {"columns" : [ {"name": "value_date", "type" : "string"}, 
+                               {"name" :"metrics", "type" : "array"},
+                               {"name" :"extra_props", "type" : "array"},
+                               {"name" :"name", "type" : "string"}]}
 
 
  #   def get_dataset(self):
@@ -83,7 +80,7 @@ class MyConnector(Connector):
         """
         
         
-        url_asset = "https://platform.api.kayrros.com/v1/processingresult/dataset/" + self.id
+        url_asset = "https://platform.api.kayrros.com/v1/processingresult/dataset/" + self.id_dataset
 
         try:        
             response = requests.post(url_asset, headers = self.headers)
