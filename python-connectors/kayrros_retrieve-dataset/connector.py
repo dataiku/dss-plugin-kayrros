@@ -29,7 +29,13 @@ class MyConnector(Connector):
         self.preset = self.config["preset"] # replace by self.id = config.get("id_dataset", "")
         if not self.preset:
             raise ValueError("A Kayrros account is necessary to fetch the data. Please provide one in the preset field.")
-        
+            
+        print("000000000000000000000000000000000000000000000000000000000000")
+        print(config)
+        print(self.config["id_dataset"])
+        print("000000000000000000000000000000000000000000000000000000000000")
+
+
         self.id = self.config["id_dataset"] #change that as suggested: self.id = config.get("id_dataset", "")
         if self.id == "":
             raise ValueError("A Kayrros dataset ID is necessary to fetch the data. Please provide one in the plugin settings.")

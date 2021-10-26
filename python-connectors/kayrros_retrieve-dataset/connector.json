@@ -37,8 +37,9 @@
         },
         {
             "name": "id_dataset",
-            "label": "Identifier of your dataset (can be found on Kayrros' website)",
-            "type": "STRING"
+            "label": "Choose your dataset",
+            "type": "SELECT",
+            "getChoicesFromPython": true
         }
     ]
 }
