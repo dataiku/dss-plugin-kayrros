@@ -21,12 +21,7 @@ class MyConnector(Connector):
         file settings.json at the root of the plugin directory are passed as a json
         object 'plugin_config' to the constructor
         """
-        
-        print("00000000000000000000000000000000000000000000000000")
-
-        print(pd.__version__)
-
-        
+               
         Connector.__init__(self, config, plugin_config) 
 
         # Perform some more initialization
