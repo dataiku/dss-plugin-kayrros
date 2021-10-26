@@ -44,12 +44,11 @@ class MyConnector(Connector):
 
         
     def get_read_schema(self):
+        
+        # We don't specify a schema here, so DSS will infer the schema
+        # from the columns actually returned by the generate_rows method
 
-         return {"columns" : [ {"name": "value_date", "type" : "string"}, 
-                               {"name" :"metrics", "type" : "array"},
-                               {"name" :"extra_props", "type" : "array"},
-                               {"name" :"name", "type" : "string"}]}
-
+        return None
 
  #   def get_dataset(self):
         
