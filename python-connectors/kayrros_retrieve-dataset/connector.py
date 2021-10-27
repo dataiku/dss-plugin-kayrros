@@ -123,12 +123,9 @@ class MyConnector(Connector):
     #                   "metrics" : str(record["metrics"]),
      #                  "extra_props" : str(record["extra_props"]),
       #                 "name" : str(content["assets"][asset]["asset_name"])}
-
-        print("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000007")
-
     
         for record in df.iterrows():
-            yield record[1]
+            yield dict(record[1])
 
             
     def get_writer(self, dataset_schema=None, dataset_partitioning=None,
