@@ -30,19 +30,18 @@ class MyConnector(Connector):
         if not self.preset:
             raise ValueError("A Kayrros account is necessary to fetch the data. Please provide one in the preset field.")
         
-        username = self.preset["username"] # replace by self.id = config.get("id_dataset", "")
-        password = self.preset["password"] # replace by self.id = config.get("id_dataset", "")
+        self.username = self.preset["username"] # replace by self.id = config.get("id_dataset", "")
+        self.password = self.preset["password"] # replace by self.id = config.get("id_dataset", "")
 
-        self.headers = get_headers(username, password)
+        self.headers = get_headers(self.username, self.password)
 
         
         # Retrieve dataset
 
-        self.id_dataset = config.get("id_dataset","")
-        if not self.id_dataset:
-            raise ValueError("Choosing a collection is necessary to fetch the data. Please provide one in the dataset field.")
+        self.id_collection = config.get("id_collection","")
+        if not self.id_collection :
+            raise ValueError("Choosing a collection is necessary to fetch the data. Please provide one in the collection field.")
 
-        
     def get_read_schema(self):
         
         # We don't specify a schema here, so DSS will infer the schema
@@ -78,9 +77,24 @@ class MyConnector(Connector):
         The dataset schema and partitioning are given for information purpose.
         """
         
-        
-        url_asset = "https://platform.api.kayrros.com/v1/processingresult/dataset/" + self.id_dataset
+        # Get the id of the dataset from the id of the collection
+                    # should offer a choice...
+                
+        GET_DATASETS = "https://platform.api.kayrros.com/v1/processing/collection/datasets"
 
+        PARAMS = {"collection_id":self.id_collection}
+        
+        req = requests.post(GET_DATASETS, data=PARAMS, headers=get_headers(self.username,self.password))
+        
+        if req.status_code == 200:
+            ds = req.json()
+            id_dataset = ds[0]["id"]
+            
+        else:
+            logger.exception("Dataset could not be retrieved")
+                             
+        url_asset = "https://platform.api.kayrros.com/v1/processingresult/dataset/" + id_dataset
+        
         try:        
             response = requests.post(url_asset, headers = self.headers)
             response.raise_for_status()
@@ -90,12 +104,12 @@ class MyConnector(Connector):
         content = response.json()
         logger.info("Received {} assets".format(len(content["assets"])))
 
-
    #     content = get_dataset(self)
 
         df = pd.DataFrame(content.get("assets",[]))
     
         for aggregated_item in ["results","metrics"]:
+            
             df = df.explode(aggregated_item).reset_index().drop("index",axis=1)
             df = df.drop(aggregated_item,axis=1).join(df[aggregated_item].apply(pd.Series))
         
@@ -109,6 +123,8 @@ class MyConnector(Connector):
     #                   "metrics" : str(record["metrics"]),
      #                  "extra_props" : str(record["extra_props"]),
       #                 "name" : str(content["assets"][asset]["asset_name"])}
+
+        print("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000007")
 
     
         for record in df.iterrows():

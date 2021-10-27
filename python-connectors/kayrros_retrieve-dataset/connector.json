@@ -36,8 +36,8 @@
             "mandatory": true
         },
         {
-            "name": "id_dataset",
-            "label": "Choose your dataset",
+            "name": "id_collection",
+            "label": "Choose your collection",
             "type": "SELECT",
             "getChoicesFromPython": true
         }
