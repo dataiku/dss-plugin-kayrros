@@ -43,7 +43,7 @@ class MyConnector(Connector):
         
         # Retrieve dataset
 
-        self.id_collection = config.get("id_collection","")
+        self.id_collection = config.get("id_collection", "")
         if not self.id_collection :
             raise ValueError("Choosing a collection is necessary to fetch the data. Please provide one in the collection field.")
 
@@ -88,7 +88,7 @@ class MyConnector(Connector):
         GET_DATASETS = "https://platform.api.kayrros.com/v1/processing/collection/datasets"
 
         PARAMS = {"collection_id":self.id_collection}
-        
+                
         req = requests.post(GET_DATASETS, data=PARAMS, headers=get_headers(self.username,self.password))
         
         if req.status_code == 200:
@@ -97,7 +97,8 @@ class MyConnector(Connector):
             
         else:
             logger.exception("Dataset could not be retrieved")
-                             
+            
+        
         url_asset = "https://platform.api.kayrros.com/v1/processingresult/dataset/" + id_dataset
         
         try:        
@@ -106,15 +107,20 @@ class MyConnector(Connector):
         except requests.exceptions.RequestException as error:
             logger.exception("Dataset could not be retrieved because of the following error:\n {}".format(error))
             raise(error)
+            
         content = response.json()
-        logger.info("Received {} assets".format(len(content["assets"])))
+        
+        nb_assets = len(content["assets"])
+        if(nb_assets == 0):
+            logger.exception("No asset. Please contact Kayrros for access to data.")
+        else:
+            logger.info("Received {} assets".format(nb_assets))
 
    #     content = get_dataset(self)
 
         df = pd.DataFrame(content.get("assets",[]))
     
         for aggregated_item in ["results","metrics"]:
-            
             df = df.explode(aggregated_item).reset_index().drop("index",axis=1)
             df = df.drop(aggregated_item,axis=1).join(df[aggregated_item].apply(pd.Series))
         
