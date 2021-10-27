@@ -4,21 +4,24 @@ import pandas as pd
 from utils.authentification import get_headers
 
 
-def do(config, plugin_config):
+def do(plugin_config):
 
     # Get credentials
 
-    mode = plugin_config["preset"]["mode"]
+ #   mode = plugin_config["preset"]["mode"]
 
-    if mode == "INLINE":
-        credentials = plugin_config["preset"]["inlinedConfig"]
-        username = credentials["username"]
-        password = credentials["password"]
+#    if mode == "INLINE":
+#        credentials = plugin_config["preset"]["inlinedConfig"]
+ #       username = credentials["username"]
+  #      password = credentials["password"]
 
-    else:
+  #  else:
         # If, for instance, mode == "PRESET"
-        logger.exception("Preset mode is not implemented for now.")
+   #     logger.exception("Preset mode is not implemented for now.")
 
+    username = plugin_config["username"]
+    password = plugin_config["password"]
+    
         # Request the connections
 
     LIST_COLLECTIONS = 'https://platform.api.kayrros.com/v1/processing/collection/list'

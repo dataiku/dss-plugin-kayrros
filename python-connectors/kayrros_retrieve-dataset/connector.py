@@ -26,13 +26,18 @@ class MyConnector(Connector):
 
         # Retrieve token
         
-        self.preset = self.config["preset"] # replace by self.id = config.get("id_dataset", "")
-        if not self.preset:
-            raise ValueError("A Kayrros account is necessary to fetch the data. Please provide one in the preset field.")
+   #     self.preset = self.config["preset"] # replace by self.id = config.get("id_dataset", "")
+   #     if not self.preset:
+   #         raise ValueError("A Kayrros account is necessary to fetch the data. Please provide one in the preset field.")
         
-        self.username = self.preset["username"] # replace by self.id = config.get("id_dataset", "")
-        self.password = self.preset["password"] # replace by self.id = config.get("id_dataset", "")
-
+        self.username = self.config["username"] # replace by self.id = config.get("id_dataset", "")
+        if not self.username:
+            raise ValueError("A Kayrros account is necessary to fetch the data. Please provide a username.")
+        
+        self.password = self.config["password"] # replace by self.id = config.get("id_dataset", "")
+        if not self.password:
+            raise ValueError("A Kayrros account is necessary to fetch the data. Please provide a password.")
+        
         self.headers = get_headers(self.username, self.password)
 
         

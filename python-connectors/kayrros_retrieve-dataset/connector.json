@@ -29,16 +29,23 @@
     "paramsPythonSetup": "choices.py",
     "params": [
         {
-            "name": "preset",
-            "label": "Preset you want to choose",
-            "type": "PRESET",
-            "parameterSetId": "identifiers",
-            "mandatory": true
+            "type": "STRING",
+            "name": "username",
+            "label": "Email",
+            "description": "The email you use to connect to the Kayrros instance",
+            "defaultValue": ""
         },
         {
+            "type": "PASSWORD",
+            "name": "password",
+            "label": "Password",
+            "description": "The password you use to connect to the Kayrros instance",
+            "defaultValue": ""
+        },
+        {
+            "type": "SELECT",
             "name": "id_collection",
             "label": "Choose your collection",
-            "type": "SELECT",
             "getChoicesFromPython": true
         }
     ]
