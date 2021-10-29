@@ -53,7 +53,7 @@
             "type": "SELECT",
             "name": "dataset_id",
             "label": "Choose your dataset",
-            "description": "The specific dataset inside of that connection",
+            "description": "The specific dataset inside of that collection",
             "getChoicesFromPython": true
         }
     ]

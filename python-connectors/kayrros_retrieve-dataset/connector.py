@@ -18,11 +18,11 @@ class MyConnector(Connector):
 
         # Retrieve credentials and token
         
-        self.username = config.get("username","")
+        self.username = config.get("username", "")
         if not self.username:
             raise ValueError("A Kayrros account is necessary to fetch the data. Please provide a username.")
         
-        self.password = config.get("password","")
+        self.password = config.get("password", "")
         if not self.password:
             raise ValueError("A Kayrros account is necessary to fetch the data. Please provide a password.")
         
@@ -66,32 +66,19 @@ class MyConnector(Connector):
         nb_assets = len(content["assets"])
         
         if(nb_assets == 0):
-            logger.exception("No asset. Please contact Kayrros for access to data.")
+            raise ValueError("No asset. Please contact Kayrros for access to data.")
+            
         else:
             logger.info("Received {} assets".format(nb_assets))
-
+            
         # Generate and format dataframe
         
         df = pd.DataFrame(content.get("assets",[]))
-    
+        
         for aggregated_item in ["results","metrics"]:
             df = df.explode(aggregated_item).reset_index().drop("index",axis=1)
             df = df.drop(aggregated_item,axis=1).join(df[aggregated_item].apply(pd.Series))
-        
-        
-        # Old way :
- #       list_aggreg = []
-
-        # Shape the data
-#        for asset in content.get("assets",[]):
- #           records = content["assets"][asset]["results"]
-  #          for record in records:
-   #             yield {"value_date" : str(record["value_date"]),
-    #                   "metrics" : str(record["metrics"]),
-     #                  "extra_props" : str(record["extra_props"]),
-      #                 "name" : str(content["assets"][asset]["asset_name"])}
-    
-    
+            
         for record in df.iterrows():
             yield dict(record[1])
 

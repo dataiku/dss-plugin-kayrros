@@ -11,6 +11,7 @@ def get_headers(username, password):
     try:        
         response = requests.post(url, json={"email": username, "password": password})
         response.raise_for_status()
+        
     except requests.exceptions.RequestException as error:
         logger.exception("Authentication token could not be retrieved because of the following error:\n {}".format(error))
         raise(error)   
