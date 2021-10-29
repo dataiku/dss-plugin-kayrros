@@ -30,11 +30,11 @@ class MyConnector(Connector):
    #     if not self.preset:
    #         raise ValueError("A Kayrros account is necessary to fetch the data. Please provide one in the preset field.")
         
-        self.username = self.config["username"] # replace by self.id = config.get("id_dataset", "")
+        self.username = config["username"] # replace by self.id = config.get("id_dataset", "")
         if not self.username:
             raise ValueError("A Kayrros account is necessary to fetch the data. Please provide a username.")
         
-        self.password = self.config["password"] # replace by self.id = config.get("id_dataset", "")
+        self.password = config["password"] # replace by self.id = config.get("id_dataset", "")
         if not self.password:
             raise ValueError("A Kayrros account is necessary to fetch the data. Please provide a password.")
         
@@ -42,10 +42,16 @@ class MyConnector(Connector):
 
         
         # Retrieve dataset
+        
 
         self.id_collection = config.get("id_collection", "")
         if not self.id_collection :
             raise ValueError("Choosing a collection is necessary to fetch the data. Please provide one in the collection field.")
+
+        self.id_dataset = config.get("id_dataset", "")
+        if not self.password:
+            raise ValueError("Choosing a dataset is necessary to fetch the data. Please provide one in the collection field.")
+
 
     def get_read_schema(self):
         
@@ -85,21 +91,21 @@ class MyConnector(Connector):
         # Get the id of the dataset from the id of the collection
                     # should offer a choice...
                 
-        GET_DATASETS = "https://platform.api.kayrros.com/v1/processing/collection/datasets"
-
-        PARAMS = {"collection_id":self.id_collection}
+ #       GET_DATASETS = "https://platform.api.kayrros.com/v1/processing/collection/datasets"
+#
+  #      PARAMS = {"collection_id":self.id_collection}
                 
-        req = requests.post(GET_DATASETS, data=PARAMS, headers=get_headers(self.username,self.password))
+   #     req = requests.post(GET_DATASETS, data=PARAMS, headers=get_headers(self.username,self.password))
         
-        if req.status_code == 200:
-            ds = req.json()
-            id_dataset = ds[0]["id"]
+    #    if req.status_code == 200:
+      #      ds = req.json()
+     #       id_dataset = ds[0]["id"]
             
-        else:
-            logger.exception("Dataset could not be retrieved")
+       # else:
+        #    logger.exception("Dataset could not be retrieved")
             
         
-        url_asset = "https://platform.api.kayrros.com/v1/processingresult/dataset/" + id_dataset
+        url_asset = "https://platform.api.kayrros.com/v1/processingresult/dataset/" + self.id_dataset
         
         try:        
             response = requests.post(url_asset, headers = self.headers)

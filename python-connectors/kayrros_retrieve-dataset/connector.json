@@ -46,15 +46,13 @@
             "type": "SELECT",
             "name": "id_collection",
             "label": "Choose your collection",
-            "getChoicesFromPython": true,
-            "paramsPythonSetup": "computechoices.py"
+            "getChoicesFromPython": true
         },
         {
             "type": "SELECT",
             "name": "id_dataset",
             "label": "Choose your dataset",
-            "getChoicesFromPython": true,
-            "paramsPythonSetup": "computechoices.py"
+            "getChoicesFromPython": true
         }
     ]
 }

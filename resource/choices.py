@@ -3,11 +3,9 @@ import dataiku
 import pandas as pd 
 from utils.authentification import get_headers
 
-
-def do(config, plugin_config):
+def do(payload, config, plugin_config, inputs):
     
-    if payload.get('parameterName') == 'id_collection':
-        
+
         # Get credentials
 
      #   mode = plugin_config["preset"]["mode"]
@@ -21,37 +19,57 @@ def do(config, plugin_config):
             # If, for instance, mode == "PRESET"
        #     logger.exception("Preset mode is not implemented for now.")
 
-    username = plugin_config["username"]
-    password = plugin_config["password"]
+    username = config["username"]
+    password = config["password"]
+    
+    
+    
+    
+    
+    if payload.get('parameterName') == 'id_collection':
 
-        # Request the connections
+            # Request the connections
 
-    LIST_COLLECTIONS = 'https://platform.api.kayrros.com/v1/processing/collection/list'
+        LIST_COLLECTIONS = 'https://platform.api.kayrros.com/v1/processing/collection/list'
 
-    req = requests.get(LIST_COLLECTIONS, headers=get_headers(username, password))
+        req = requests.get(LIST_COLLECTIONS, headers=get_headers(username, password))
+        
+        choices = []
 
-    if req.status_code == 200:
-        coll = req.json()
+        if req.status_code == 200:
+            coll = req.json()
+            for item in coll:
+                choices += [{"value":item["id"], "label":item["name"]}]
 
-    choices = []
+        else:
+            logger.exception("Collection could not be retrieved")
 
-    # Build choices
+        # Build choices
 
-    for item in coll:
-        choices += [{"value":item["id"], "label":item["name"]}]
+        return {"choices": choices}
 
-    return {"choices": choices}
-
+    
+    
     
     
     
     if payload.get('parameterName') == 'id_dataset':
+        
+        GET_DATASETS = "https://platform.api.kayrros.com/v1/processing/collection/datasets"
+        
+        PARAMS = {"collection_id": config["id_collection"]}
+        
+        req = requests.post(GET_DATASETS, data=PARAMS, headers=get_headers(username,password))
+        
+        choices = []
+        
+        if req.status_code == 200:
+            ds = req.json()
+            for item in ds:
+                choices += [{"value":item["id"], "label":item["name"]}]
+           
+        else:
+            logger.exception("Dataset could not be retrieved")
 
-        choices = [{ "value" : "val1", "label" : "label1"}]
         return {"choices": choices}
 
-
-    
-    
-    
-    
