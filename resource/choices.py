@@ -26,7 +26,7 @@ def do(payload, config, plugin_config, inputs):
     
     
     
-    if payload.get('parameterName') == 'id_collection':
+    if payload.get('parameterName') == 'collection_id':
 
             # Request the connections
 
@@ -53,11 +53,11 @@ def do(payload, config, plugin_config, inputs):
     
     
     
-    if payload.get('parameterName') == 'id_dataset':
+    if payload.get('parameterName') == 'dataset_id':
         
         GET_DATASETS = "https://platform.api.kayrros.com/v1/processing/collection/datasets"
         
-        PARAMS = {"collection_id": config["id_collection"]}
+        PARAMS = {"collection_id": config["collection_id"]}
         
         req = requests.post(GET_DATASETS, data=PARAMS, headers=get_headers(username,password))
         

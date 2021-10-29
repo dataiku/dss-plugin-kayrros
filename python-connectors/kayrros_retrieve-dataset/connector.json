@@ -44,14 +44,16 @@
         },
         {
             "type": "SELECT",
-            "name": "id_collection",
+            "name": "collection_id",
             "label": "Choose your collection",
+            "description": "The collection you want to retrieve from Kayrros",
             "getChoicesFromPython": true
         },
         {
             "type": "SELECT",
-            "name": "id_dataset",
+            "name": "dataset_id",
             "label": "Choose your dataset",
+            "description": "The specific dataset inside of that connection",
             "getChoicesFromPython": true
         }
     ]

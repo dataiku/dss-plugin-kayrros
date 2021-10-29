@@ -13,42 +13,28 @@ class MyConnector(Connector):
     # A custom Python dataset is a subclass of connector.
 
     def __init__(self, config, plugin_config):
-        
-        """
-        The configuration parameters set up by the user in the settings tab of the
-        dataset are passed as a json object 'config' to the constructor.
-        The static configuration parameters set up by the developer in the optional
-        file settings.json at the root of the plugin directory are passed as a json
-        object 'plugin_config' to the constructor
-        """
-               
+
         Connector.__init__(self, config, plugin_config) 
 
-        # Retrieve token
+        # Retrieve credentials and token
         
-   #     self.preset = self.config["preset"] # replace by self.id = config.get("id_dataset", "")
-   #     if not self.preset:
-   #         raise ValueError("A Kayrros account is necessary to fetch the data. Please provide one in the preset field.")
-        
-        self.username = config["username"] # replace by self.id = config.get("id_dataset", "")
+        self.username = config.get("username","")
         if not self.username:
             raise ValueError("A Kayrros account is necessary to fetch the data. Please provide a username.")
         
-        self.password = config["password"] # replace by self.id = config.get("id_dataset", "")
+        self.password = config.get("password","")
         if not self.password:
             raise ValueError("A Kayrros account is necessary to fetch the data. Please provide a password.")
         
         self.headers = get_headers(self.username, self.password)
 
+        # Retrieve ids of collection and dataset
         
-        # Retrieve dataset
-        
-
-        self.id_collection = config.get("id_collection", "")
-        if not self.id_collection :
+        self.collection_id = config.get("collection_id", "")
+        if not self.collection_id :
             raise ValueError("Choosing a collection is necessary to fetch the data. Please provide one in the collection field.")
 
-        self.id_dataset = config.get("id_dataset", "")
+        self.dataset_id = config.get("dataset_id", "")
         if not self.password:
             raise ValueError("Choosing a dataset is necessary to fetch the data. Please provide one in the collection field.")
 
@@ -60,76 +46,40 @@ class MyConnector(Connector):
 
         return None
 
- #   def get_dataset(self):
-        
-  #      url_asset = "https://platform.api.kayrros.com/v1/processingresult/dataset/" + self.id
-
-   #     try:        
-     #       response = requests.post(url_asset, headers = self.headers)
-    #        response.raise_for_status()
-#        except requests.exceptions.RequestException as error:
- #           logger.exception("Dataset could not be retrieved because of the following error:\n {}".format(error))
-  #          raise(error)
-   #     content = response.json()
-    #    logger.info("Received {} records".format(len(content["assets"])))
-
-     #   return content
-
 
     def generate_rows(self, dataset_schema=None, dataset_partitioning=None,
                             partition_id=None, records_limit = -1):
         
-        """
-        The main reading method.
-
-        Returns a generator over the rows of the dataset (or partition)
-        Each yielded row must be a dictionary, indexed by column name.
-
-        The dataset schema and partitioning are given for information purpose.
-        """
-        
-        # Get the id of the dataset from the id of the collection
-                    # should offer a choice...
-                
- #       GET_DATASETS = "https://platform.api.kayrros.com/v1/processing/collection/datasets"
-#
-  #      PARAMS = {"collection_id":self.id_collection}
-                
-   #     req = requests.post(GET_DATASETS, data=PARAMS, headers=get_headers(self.username,self.password))
-        
-    #    if req.status_code == 200:
-      #      ds = req.json()
-     #       id_dataset = ds[0]["id"]
-            
-       # else:
-        #    logger.exception("Dataset could not be retrieved")
-            
-        
-        url_asset = "https://platform.api.kayrros.com/v1/processingresult/dataset/" + self.id_dataset
+        url_asset = "https://platform.api.kayrros.com/v1/processingresult/dataset/" + self.dataset_id
         
         try:        
             response = requests.post(url_asset, headers = self.headers)
             response.raise_for_status()
+            
         except requests.exceptions.RequestException as error:
             logger.exception("Dataset could not be retrieved because of the following error:\n {}".format(error))
-            raise(error)
             
         content = response.json()
         
+        # If no asset, abort it
+        
         nb_assets = len(content["assets"])
+        
         if(nb_assets == 0):
             logger.exception("No asset. Please contact Kayrros for access to data.")
         else:
             logger.info("Received {} assets".format(nb_assets))
 
-   #     content = get_dataset(self)
-
+        # Generate and format dataframe
+        
         df = pd.DataFrame(content.get("assets",[]))
     
         for aggregated_item in ["results","metrics"]:
             df = df.explode(aggregated_item).reset_index().drop("index",axis=1)
             df = df.drop(aggregated_item,axis=1).join(df[aggregated_item].apply(pd.Series))
         
+        
+        # Old way :
  #       list_aggreg = []
 
         # Shape the data
@@ -140,6 +90,7 @@ class MyConnector(Connector):
     #                   "metrics" : str(record["metrics"]),
      #                  "extra_props" : str(record["extra_props"]),
       #                 "name" : str(content["assets"][asset]["asset_name"])}
+    
     
         for record in df.iterrows():
             yield dict(record[1])
