@@ -71,14 +71,25 @@ class MyConnector(Connector):
         else:
             logger.info("Received {} assets".format(nb_assets))
             
-        # Generate and format dataframe
+        # Generate dataframe
         
-        df = pd.DataFrame(content.get("assets",[]))
+        df = pd.DataFrame(content.get("assets", []))
         
-        for aggregated_item in ["results","metrics"]:
-            df = df.explode(aggregated_item).reset_index().drop("index",axis=1)
-            df = df.drop(aggregated_item,axis=1).join(df[aggregated_item].apply(pd.Series))
+        # Basic data preparation
+        
+        ########################################
+        ########### NOTE TO REVIEWERS ########## 
+        ########################################
+        ##### Can it be optimized further? #####
+        ########################################
+      
+        df = df.explode("results").reset_index()                               # Explodes time series into different lines
+        df = df.join(df["results"].apply(pd.Series))                           # Unfolds results column
+        df = df.join(df["metrics"].apply(lambda x : pd.Series(x[0])))          # Unfolds metrics column (was inside of results)
+        df = df.drop(["index","results","metrics"],axis=1)                     # Drops useless columns
             
+        # Yield results
+        
         for record in df.iterrows():
             yield dict(record[1])
 
