@@ -75,18 +75,12 @@ class MyConnector(Connector):
         
         df = pd.DataFrame(content.get("assets", []))
         
-        # Basic data preparation
+        # Basic data preparation on results column
         
-        ########################################
-        ########### NOTE TO REVIEWERS ########## 
-        ########################################
-        ##### Can it be optimized further? #####
-        ########################################
-      
-        df = df.explode("results").reset_index()                               # Explodes time series into different lines
-        df = df.join(df["results"].apply(pd.Series))                           # Unfolds results column
-        df = df.join(df["metrics"].apply(lambda x : pd.Series(x[0])))          # Unfolds metrics column (was inside of results)
-        df = df.drop(["index","results","metrics"],axis=1)                     # Drops useless columns
+        df = df.explode("results").reset_index()
+        results_col = [{**{el:x[el] for el in set(x.keys())-{'metrics'}}, **x["metrics"][0]} for x in df["results"].tolist()]
+        df = pd.concat([df, pd.DataFrame(results_col)], axis=1)
+        df = df.drop(["index","results"],axis=1)
             
         # Yield results
         
