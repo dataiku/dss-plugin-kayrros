@@ -55,7 +55,8 @@ class MyConnector(Connector):
             response.raise_for_status()
 
         except requests.exceptions.RequestException as error:
-            raise("Dataset could not be retrieved because of the following error:\n {}".format(error))
+            logger.exception("Authentication token could not be retrieved because of the following error:\n {}".format(error))
+            raise(error)   
 
         content = response.json()
 

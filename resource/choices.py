@@ -15,14 +15,14 @@ def do(payload, config, plugin_config, inputs):
 
         LIST_COLLECTIONS = "https://platform.api.kayrros.com/v1/processing/collection/list"
 
-        req = requests.get(LIST_COLLECTIONS, headers=get_headers(username, password))
+        request = requests.get(LIST_COLLECTIONS, headers=get_headers(username, password))
 
         # Build choices
 
         choices = []
 
-        if req.status_code == 200:
-            coll = req.json()
+        if request.status_code == 200:
+            coll = request.json()
             for item in coll:
                 choices += [{"value": item["id"], "label": item["name"]}]
         else:
@@ -35,14 +35,14 @@ def do(payload, config, plugin_config, inputs):
         GET_DATASETS = "https://platform.api.kayrros.com/v1/processing/collection/datasets"
         PARAMS = {"collection_id": config["collection_id"]}
 
-        req = requests.post(GET_DATASETS, data=PARAMS, headers=get_headers(username, password))
+        request = requests.post(GET_DATASETS, data=PARAMS, headers=get_headers(username, password))
 
         # Build choices
 
         choices = []
 
-        if req.status_code == 200:
-            ds = req.json()
+        if request.status_code == 200:
+            ds = request.json()
             for item in ds:
                 choices += [{"value": item["id"], "label": item["name"]}]
 
