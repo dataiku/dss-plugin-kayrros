@@ -76,8 +76,9 @@ class MyConnector(Connector):
         # Basic data preparation on results column
 
         df = df.explode("results").reset_index()
-        results_col = [{**{el: x[el] for el in set(x.keys())-{'metrics'}}, **x["metrics"][0]} for x in df["results"].tolist()]
-        df = pd.concat([df, pd.DataFrame(results_col)], axis=1)
+        unfold_results = [{**{column: result[column] for column in set(result.keys())-{'metrics'}}, **result["metrics"][0]}\
+                         for result in df["results"].tolist()]
+        df = pd.concat([df, pd.DataFrame(unfold_results)], axis=1)
         df = df.drop(["index", "results"], axis=1)
 
         # Yield results
