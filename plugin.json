@@ -5,7 +5,7 @@
         "label": "Kayrros",
         "description": "Read data from your Kayrros account",
         "author": "Dataiku (Maxime Capron)",
-        "icon": "icon-puzzle-piece",
+        "icon": "icon-rss",
         "tags": ["Connector"],
         "url": "https://www.dataiku.com/product/plugins/kayrros/",
         "licenseInfo": "Apache Software License",
