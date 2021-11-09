@@ -1,8 +1,7 @@
-from dataiku.connector import Connector
-from utils.authentification import get_headers
-import pandas as pd
 import requests
 import logging
+from dataiku.connector import Connector
+from utils.authentification import get_headers
 
 logger = logging.getLogger(__name__) 
 

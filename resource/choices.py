@@ -1,7 +1,8 @@
 import requests
-import dataiku
-import pandas as pd 
+import logging
 from utils.authentification import get_headers
+
+logger = logging.getLogger(__name__) 
 
 
 def do(payload, config, plugin_config, inputs):
