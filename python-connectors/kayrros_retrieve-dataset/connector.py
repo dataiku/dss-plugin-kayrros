@@ -55,13 +55,13 @@ class MyConnector(Connector):
             response.raise_for_status()
 
         except requests.exceptions.RequestException as error:
-            logger.exception("Dataset could not be retrieved because of the following error:\n {}".format(error))
+            raise("Dataset could not be retrieved because of the following error:\n {}".format(error))
 
         content = response.json()
 
         # If no asset, abort it
 
-        nb_assets = len(content["assets"])
+        nb_assets = len(content.get("assets", []))
 
         if(nb_assets == 0):
             raise ValueError("No asset. Please contact Kayrros for access to data.")
