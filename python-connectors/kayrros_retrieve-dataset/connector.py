@@ -1,5 +1,3 @@
-# This file is the actual code for the custom Python dataset kayrros_retrieve-dataset
-
 from dataiku.connector import Connector
 from utils.authentification import get_headers
 import pandas as pd
@@ -10,8 +8,6 @@ logger = logging.getLogger(__name__)
 
 
 class MyConnector(Connector):
-
-    # A custom Python dataset is a subclass of connector.
 
     def __init__(self, config, plugin_config):
 
@@ -77,8 +73,8 @@ class MyConnector(Connector):
         # Basic data preparation on results column
 
         df = df.explode("results").reset_index()
-        unfold_results = [{**{column: result[column] for column in set(result.keys())-{'metrics'}}, **result["metrics"][0]}\
-                         for result in df["results"].tolist()]
+        unfold_results = [{**{column: result[column] for column in set(result.keys())-{'metrics'}}, **result["metrics"][0]}
+                          for result in df["results"].tolist()]
         df = pd.concat([df, pd.DataFrame(unfold_results)], axis=1)
         df = df.drop(["index", "results"], axis=1)
 
