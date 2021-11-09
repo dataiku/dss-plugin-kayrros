@@ -50,9 +50,11 @@ class MyConnector(Connector):
         status_code = response.status_code
         logger.info("Response status code : {}".format(status_code))
 
+        # On large datasets the API can give timeout errors. Kayrros knows it and is working on it.
         if status_code == 504:
             raise Exception("Timeout error. Known issue - Kayrros is working on that!")
 
+        # Other errors
         if status_code >= 400:
             raise Exception("Unknown error. Status code: {}!".format(status_code))
 
@@ -75,7 +77,7 @@ class MyConnector(Connector):
         # Basic data preparation on results column
 
         df = df.explode("results").reset_index()
-        unfold_results = [{**{column: result[column] for column in set(result.keys())-{'metrics'}}, **result["metrics"][0]}
+        unfold_results = [{**{column: result[column] for column in set(result.keys())-{"metrics"}}, **result["metrics"][0]}
                           for result in df["results"].tolist()]
         df = pd.concat([df, pd.DataFrame(unfold_results)], axis=1)
         df = df.drop(["index", "results"], axis=1)
