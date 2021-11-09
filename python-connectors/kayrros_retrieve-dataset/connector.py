@@ -1,5 +1,6 @@
 import requests
 import logging
+import pandas as pd
 from dataiku.connector import Connector
 from utils.authentification import get_headers
 
