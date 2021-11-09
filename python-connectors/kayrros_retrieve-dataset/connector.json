@@ -1,7 +1,7 @@
 {
     "meta" : {
         "label": "Custom dataset kayrros_retrieve-dataset",
-        "description": "",
+        "description": "Retrieve your dataset from the Kayrros API",
         "icon": "icon-rss"
     },
     "readable": true,

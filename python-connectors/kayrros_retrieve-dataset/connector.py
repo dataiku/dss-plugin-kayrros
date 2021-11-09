@@ -46,13 +46,15 @@ class MyConnector(Connector):
 
         url_asset = "https://platform.api.kayrros.com/v1/processingresult/dataset/" + self.dataset_id
 
-        try:        
-            response = requests.post(url_asset, headers=self.headers)
-            response.raise_for_status()
+        response = requests.post(url_asset, headers=self.headers)
+        status_code = response.status_code
+        logger.info("Response status code : {}".format(status_code))
 
-        except requests.exceptions.RequestException as error:
-            logger.exception("Authentication token could not be retrieved because of the following error:\n {}".format(error))
-            raise(error)   
+        if status_code == 504:
+            raise Exception("Timeout error. Known issue - Kayrros is working on that!")
+
+        if status_code >= 400:
+            raise Exception("Unknown error. Status code: {}!".format(status_code))
 
         content = response.json()
 
