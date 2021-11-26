@@ -1,17 +1,14 @@
 {
     "id": "kayrros",
-    "version": "0.1.0",
+    "version": "0.0.1",
     "meta": {
-        "label": "Plugin template - Replace by your plugin label",
-        "category": "Your category (optional)",
-        "description": "Your description (keep it short and simple)",
-        "author": "Organization (firstName LASTNAME)",
-        "icon": "icon-font-awesome-3.2.1",
+        "label": "Kayrros",
+        "description": "Read data from your Kayrros account",
+        "author": "Dataiku (Maxime Capron)",
+        "icon": "icon-rss",
+        "tags": ["Connector"],
+        "url": "https://www.dataiku.com/product/plugins/kayrros/",
         "licenseInfo": "Apache Software License",
-        "url": "https://www.dataiku.com/product/plugins/your-plugin-id/",
-        "tags": [
-            "myTag"
-        ],
-        "supportLevel": "NOT_SUPPORTED"
+        "supportLevel": "NOT_SUPPORTED" 
     }
 }

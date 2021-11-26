@@ -1,0 +1,40 @@
+{
+    "meta" : {
+        "label": "Custom dataset kayrros_retrieve-dataset",
+        "description": "Retrieve your dataset from the Kayrros API",
+        "icon": "icon-rss"
+    },
+    "readable": true,
+    "writable": false,
+    "paramsPythonSetup": "choices.py",
+    "params": [
+        {
+            "type": "STRING",
+            "name": "username",
+            "label": "Email",
+            "description": "The email you use to connect to the Kayrros instance",
+            "defaultValue": ""
+        },
+        {
+            "type": "PASSWORD",
+            "name": "password",
+            "label": "Password",
+            "description": "The password you use to connect to the Kayrros instance",
+            "defaultValue": ""
+        },
+        {
+            "type": "SELECT",
+            "name": "collection_id",
+            "label": "Choose your collection",
+            "description": "The collection you want to retrieve from Kayrros",
+            "getChoicesFromPython": true
+        },
+        {
+            "type": "SELECT",
+            "name": "dataset_id",
+            "label": "Choose your dataset",
+            "description": "The specific dataset inside of that collection",
+            "getChoicesFromPython": true
+        }
+    ]
+}
