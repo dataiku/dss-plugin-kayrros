@@ -1,6 +1,6 @@
 {
     "id": "kayrros",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "meta": {
         "label": "Kayrros",
         "description": "Read data from your Kayrros account",
