@@ -1,14 +1,16 @@
 {
-    "id": "kayrros",
-    "version": "1.1.0",
-    "meta": {
-        "label": "Kayrros",
-        "description": "Read data from your Kayrros account",
-        "author": "Dataiku (Maxime Capron)",
-        "icon": "icon-rss",
-        "tags": ["Connector"],
-        "url": "https://www.dataiku.com/product/plugins/kayrros/",
-        "licenseInfo": "Apache Software License",
-        "supportLevel": "NOT_SUPPORTED" 
-    }
+  "id": "kayrros",
+  "version": "1.2.0",
+  "meta": {
+    "label": "Kayrros",
+    "description": "Read data from your Kayrros account",
+    "author": "Dataiku (Maxime Capron)",
+    "icon": "icon-rss",
+    "tags": [
+      "Connector"
+    ],
+    "url": "https://www.dataiku.com/product/plugins/kayrros/",
+    "licenseInfo": "Apache Software License",
+    "supportLevel": "NOT_SUPPORTED"
+  }
 }
