@@ -6,8 +6,10 @@
     "description": "Read data from your Kayrros account",
     "author": "Dataiku (Maxime Capron)",
     "icon": "icon-rss",
+    "category": "Geospatial",
     "tags": [
-      "Connector"
+      "Connector",
+      "Geospatial"
     ],
     "url": "https://www.dataiku.com/product/plugins/kayrros/",
     "licenseInfo": "Apache Software License",
